@@ -21,7 +21,7 @@ from collections import defaultdict
 import pdfplumber
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────2
 # PART 1 — Data classes
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -34,16 +34,14 @@ class Page:
 
     def get_sentences(self) -> list[str]:
         """Split raw_text into a list of sentences (split on '.')."""
-        # TODO: split self.raw_text on "." and return a list of non-empty,
-        #       stripped strings
-        pass
+        return [s.trip() for s in self.raw_text.split(".") if s.strip() != ""]
 
     def get_words(self) -> list[str]:
         """Return every word on this page, lowercased, punctuation removed."""
-        # TODO: use map() to lowercase each word and strip punctuation
-        #       use filter() to remove empty strings
-        #       hint: string.punctuation has all punctuation characters
-        pass
+        word = self.raw_text.split()
+        turn_lower = filter(lambda x: x != "", map(lambda x: x.lower().strip(string.punctuation), word))
+
+        return list(turn_lower)
 
 
 class Document:
