@@ -53,11 +53,12 @@ class Document:
 
     def load(self) -> None:
         """Open the PDF and populate self.pages."""
-        # TODO: use pdfplumber.open(self.filepath) as pdf:
-        #       loop through pdf.pages, extract text with .extract_text()
-        #       create a Page object for each and append to self.pages
-        #       handle the case where extract_text() returns None
-        pass
+        with pdfplumber.open(self.filepath) as pdf:
+            for i, page in enumerate(pdf.pages):
+                text = page.extract_text()
+                if text is None:
+                    text = ""
+                self.pages.append(Page(i, text))
 
     def all_words(self) -> list[str]:
         """Return every word from every page as one flat list."""
