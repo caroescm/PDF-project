@@ -71,10 +71,11 @@ class Summary:
     def word_counts(self) -> dict[str, int]:
         """Count how often each word appears across the whole document."""
         counts: dict[str, int] = defaultdict(int)
-        # TODO: get all words from self.document.all_words()
-        #       loop through them and increment counts[word]
-        #       return dict(counts) at the end
-        pass
+        total_words = self.document.all_words()
+        for word in total_words:
+                counts[word] += 1
+        return dict(counts)
+
 
     def top_keywords(self) -> list[tuple[str, int]]:
         """Return the self.top_n most frequent words, excluding stop words."""
