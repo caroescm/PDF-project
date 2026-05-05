@@ -30,13 +30,12 @@ class Page:
 
     def get_sentences(self) -> list[str]:
         """Split raw_text into a list of sentences (split on '.')."""
-        return [s.trip() for s in self.raw_text.split(".") if s.strip() != ""]
+        return [s.strip() for s in self.raw_text.split(".") if s.strip() != ""]
 
     def get_words(self) -> list[str]:
         """Return every word on this page, lowercased, punctuation removed."""
         word = self.raw_text.split()
         turn_lower = filter(lambda x: x != "", map(lambda x: x.lower().strip(string.punctuation), word))
-
         return list(turn_lower)
 
 
@@ -73,9 +72,8 @@ class Summary:
         counts: dict[str, int] = defaultdict(int)
         total_words = self.document.all_words()
         for word in total_words:
-                counts[word] += 1
+            counts[word] += 1
         return dict(counts)
-
 
     def top_keywords(self) -> list[tuple[str, int]]:
         """Return the self.top_n most frequent words, excluding stop words."""
@@ -153,7 +151,7 @@ def main() -> None:
 
     doc.load()
     if not doc.pages:
-        print("Error")
+        print("Error: no pages found — did the PDF load correctly?")
         return
 
     summary = Summary(doc, top_n=15)
