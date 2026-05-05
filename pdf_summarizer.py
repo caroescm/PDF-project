@@ -21,10 +21,6 @@ from collections import defaultdict
 import pdfplumber
 
 
-# ─────────────────────────────────────────────────────────────────────────────2
-# PART 1 — Data classes
-# ─────────────────────────────────────────────────────────────────────────────
-
 class Page:
     """Represents one page of a PDF."""
 
@@ -153,10 +149,6 @@ class Summary:
 
         print()
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PART 2 — Main
-# ─────────────────────────────────────────────────────────────────────────────
 
 def main() -> None:
     filepath = input("Enter path to a PDF file: ").strip()
