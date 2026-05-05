@@ -102,6 +102,7 @@ class Summary:
             """Count how many keywords appear in this sentence."""
             words = [w.lower().strip(string.punctuation) for w in sentence.split()]
             return len([w for w in words if w in keywords])
+
         def recurse(pages: list[Page]) -> list[str]:
             # TODO: base case — if pages is empty, return []
             if not pages:
