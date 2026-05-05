@@ -114,9 +114,7 @@ class Summary:
             return top_two + recurse(pages[1:])
 
         all_sentences = recurse(self.document.pages)
-
-        # TODO: sort all_sentences by score_sentence() and return top 5
-        pass
+        return sorted(all_sentences, key= lambda x: score_sentence(x), reverse= True)[:5]
 
     def display(self) -> None:
         """Print the final summary to the terminal."""
