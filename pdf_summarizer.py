@@ -86,11 +86,9 @@ class Summary:
             "you", "i", "if", "so", "do", "its", "can", "will", "all", "—",
         }
         counts = self.word_counts()
-
-        # TODO: use filter() to remove any word that is in STOP_WORDS
-        #       then use sorted() with key=lambda to sort by count (highest first)
-        #       return only the top self.top_n results
-        pass
+        filtered = filter(lambda x: x[0] not in STOP_WORDS, counts.items())
+        by_count = sorted(filtered, key = lambda x: x[1], reverse = True)
+        return by_count[:self.top_n]
 
     def important_sentences(self, keywords: set[str]) -> list[str]:
         """
@@ -102,19 +100,17 @@ class Summary:
         """
         def score_sentence(sentence: str) -> int:
             """Count how many keywords appear in this sentence."""
-            # TODO: split the sentence into words (lowercase, strip punctuation)
-            #       return how many of those words are in the keywords set
-            pass
-
+            words = [w.lower().strip(string.punctuation) for w in sentence.split()]
+            return len([w for w in words if w in keywords])
         def recurse(pages: list[Page]) -> list[str]:
             # TODO: base case — if pages is empty, return []
-            # TODO: recursive case:
-            #         get sentences from pages[0]
-            #         filter out sentences shorter than 5 words
-            #         sort them by score_sentence() descending
-            #         take the top 2 from this page
-            #         return those + recurse(pages[1:])
-            pass
+            if not pages:
+                return []
+            sentences = pages[0].get_sentences()
+            long_sentences = filter(lambda x: len(x.split()) >= 5, sentences)
+            by_score = sorted(long_sentences, key = lambda x: score_sentence(x), reverse = True)
+            top_two = by_score[:2]
+            return top_two + recurse(pages[1:])
 
         all_sentences = recurse(self.document.pages)
 
