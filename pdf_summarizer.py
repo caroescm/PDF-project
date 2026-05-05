@@ -145,7 +145,7 @@ class Summary:
 
 
 def main() -> None:
-    filepath = input("Enter path to a PDF file: ").strip()
+    filepath = input("Enter path to a PDF file: ").strip().strip("'\"")
 
     doc = Document(filepath)
 
