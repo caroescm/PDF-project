@@ -62,9 +62,7 @@ class Document:
 
     def all_words(self) -> list[str]:
         """Return every word from every page as one flat list."""
-        # TODO: use a list comprehension — for each page call page.get_words()
-        #       and flatten the result into a single list
-        pass
+        return [word for page in self.pages for word in page.get_words()]
 
 
 class Summary:
