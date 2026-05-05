@@ -151,8 +151,10 @@ def main() -> None:
 
     doc = Document(filepath)
 
-    # TODO: call doc.load() to read the PDF
-    # TODO: check if doc.pages is empty and print an error if so
+    doc.load()
+    if not doc.pages:
+        print("Error")
+        return
 
     summary = Summary(doc, top_n=15)
     summary.display()
