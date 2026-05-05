@@ -1,0 +1,177 @@
+"""
+PDF Highlighter Summarizer
+==========================
+Give it a PDF path → get a keyword summary back.
+
+Concepts to practice:
+  - OOP (classes, __init__, self, methods)
+  - File I/O
+  - Higher-order functions (map, filter, sorted with key=lambda)
+  - defaultdict
+  - Recursion
+  - String methods
+  - List comprehensions
+
+Install the PDF library first:
+  pip install pdfplumber
+"""
+
+import string
+from collections import defaultdict
+import pdfplumber
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PART 1 — Data classes
+# ─────────────────────────────────────────────────────────────────────────────
+
+class Page:
+    """Represents one page of a PDF."""
+
+    def __init__(self, page_number: int, raw_text: str):
+        self.page_number = page_number
+        self.raw_text    = raw_text
+
+    def get_sentences(self) -> list[str]:
+        """Split raw_text into a list of sentences (split on '.')."""
+        # TODO: split self.raw_text on "." and return a list of non-empty,
+        #       stripped strings
+        pass
+
+    def get_words(self) -> list[str]:
+        """Return every word on this page, lowercased, punctuation removed."""
+        # TODO: use map() to lowercase each word and strip punctuation
+        #       use filter() to remove empty strings
+        #       hint: string.punctuation has all punctuation characters
+        pass
+
+
+class Document:
+    """Represents a full PDF as a list of Page objects."""
+
+    def __init__(self, filepath: str):
+        self.filepath = filepath
+        self.pages: list[Page] = []
+
+    def load(self) -> None:
+        """Open the PDF and populate self.pages."""
+        # TODO: use pdfplumber.open(self.filepath) as pdf:
+        #       loop through pdf.pages, extract text with .extract_text()
+        #       create a Page object for each and append to self.pages
+        #       handle the case where extract_text() returns None
+        pass
+
+    def all_words(self) -> list[str]:
+        """Return every word from every page as one flat list."""
+        # TODO: use a list comprehension — for each page call page.get_words()
+        #       and flatten the result into a single list
+        pass
+
+
+class Summary:
+    """Builds and displays a summary from a Document."""
+
+    def __init__(self, document: Document, top_n: int = 15):
+        self.document = document
+        self.top_n    = top_n
+
+    def word_counts(self) -> dict[str, int]:
+        """Count how often each word appears across the whole document."""
+        counts: dict[str, int] = defaultdict(int)
+        # TODO: get all words from self.document.all_words()
+        #       loop through them and increment counts[word]
+        #       return dict(counts) at the end
+        pass
+
+    def top_keywords(self) -> list[tuple[str, int]]:
+        """Return the self.top_n most frequent words, excluding stop words."""
+        STOP_WORDS = {
+            "the", "a", "an", "is", "it", "in", "on", "at", "to", "of",
+            "and", "or", "for", "with", "this", "that", "be", "as", "are",
+            "was", "by", "from", "but", "not", "have", "had", "has", "we",
+            "you", "i", "if", "so", "do", "its", "can", "will", "all", "—",
+        }
+        counts = self.word_counts()
+
+        # TODO: use filter() to remove any word that is in STOP_WORDS
+        #       then use sorted() with key=lambda to sort by count (highest first)
+        #       return only the top self.top_n results
+        pass
+
+    def important_sentences(self, keywords: set[str]) -> list[str]:
+        """
+        Recursively score sentences and return the top 5.
+
+        Use recursion to walk through the pages:
+          base case  → no pages left, return []
+          recursive  → score sentences on current page, combine with rest
+        """
+        def score_sentence(sentence: str) -> int:
+            """Count how many keywords appear in this sentence."""
+            # TODO: split the sentence into words (lowercase, strip punctuation)
+            #       return how many of those words are in the keywords set
+            pass
+
+        def recurse(pages: list[Page]) -> list[str]:
+            # TODO: base case — if pages is empty, return []
+            # TODO: recursive case:
+            #         get sentences from pages[0]
+            #         filter out sentences shorter than 5 words
+            #         sort them by score_sentence() descending
+            #         take the top 2 from this page
+            #         return those + recurse(pages[1:])
+            pass
+
+        all_sentences = recurse(self.document.pages)
+
+        # TODO: sort all_sentences by score_sentence() and return top 5
+        pass
+
+    def display(self) -> None:
+        """Print the final summary to the terminal."""
+        keywords_ranked = self.top_keywords()
+
+        if not keywords_ranked:
+            print("No content found — did the PDF load correctly?")
+            return
+
+        keyword_set = {word for word, _ in keywords_ranked}
+
+        print(f"\n{'=' * 50}")
+        print(f"  SUMMARY: {self.document.filepath}")
+        print(f"  Pages: {len(self.document.pages)}")
+        print(f"{'=' * 50}")
+
+        print(f"\nTop {self.top_n} Keywords:")
+        print("-" * 30)
+        for word, count in keywords_ranked:
+            bar = "█" * min(count, 30)
+            print(f"  {word:<20} {bar} ({count})")
+
+        print(f"\nKey Sentences:")
+        print("-" * 30)
+        sentences = self.important_sentences(keyword_set)
+        for i, sentence in enumerate(sentences, 1):
+            print(f"  {i}. {sentence.strip()}")
+
+        print()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PART 2 — Main
+# ─────────────────────────────────────────────────────────────────────────────
+
+def main() -> None:
+    filepath = input("Enter path to a PDF file: ").strip()
+
+    doc = Document(filepath)
+
+    # TODO: call doc.load() to read the PDF
+    # TODO: check if doc.pages is empty and print an error if so
+
+    summary = Summary(doc, top_n=15)
+    summary.display()
+
+
+if __name__ == "__main__":
+    main()
